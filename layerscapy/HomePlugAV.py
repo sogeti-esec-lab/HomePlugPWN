@@ -20,6 +20,8 @@ HPAVTypeList = { 0xA000 : "'Get Device/sw version Request'",
                 0xA020 : "'Write Module Data Request'",
                 0xA024 : "'Read Module Data Request'",
                 0xA025 : "'Read Module Data Confirmation'",
+                0xA028 : "'Write Module Data to NVM Request'",
+                0xA028 : "'Write Module Data to NVM Confirmation'",
                 0xA034 : "'Sniffer Request'",
                 0xA035 : "'Sniffer Confirmation'",
                 0xA036 : "'Sniffer Indicates'",
@@ -71,7 +73,7 @@ QualcommTypeList = {  #0xA000 : "VS_SW_VER",
                     #0xA01C : "VS_RS_DEV",
                     #0xA020 : "VS_WR_MOD",
                     #0xA024 : "VS_RD_MOD",
-                    0xA028 : "VS_MOD_NVM",
+                    #0xA028 : "VS_MOD_NVM",
                     0xA02C : "VS_WD_RPT",
                     0xA030 : "VS_LNK_STATS",
                     #0xA034 : "VS_SNIFFER",
@@ -476,13 +478,11 @@ class WriteModuleDataRequest(Packet):
         import binascii
         if self.DataLen is None:
             _len = len(self.ModuleData)
-            p = p[:6] + struct.pack('h', _len) + p[8:]
+            p = p[:2] + struct.pack('h', _len) + p[4:]
         if self.checksum is None and p:
             ck = chksum32(self.ModuleData)
-            p = p[:12] + struct.pack('I', ck) + p[16:]
+            p = p[:8] + struct.pack('I', ck) + p[12:]
         return p+pay
-
-#TODO: Complet with Write Module data
 
 ######################################
 # Parse PIB                          #
@@ -1099,7 +1099,7 @@ class StartMACConfirmation(Packet):
                 ]
 
 ######################################################################
-# Read MAC Memory
+# Reset Device
 ######################################################################
 
 ResetDeviceCodes = { 0x00 : "Success" }
@@ -1171,6 +1171,20 @@ class ReadConfBlockConfirmation(Packet):
                   FieldLenField("BlockLen", None, count_of="ConfigurationBlock", fmt="B"),
                   PacketListField("ConfigurationBlock", None, ConfBlock, length_from=lambda pkt:pkt.BlockLen) ]
 
+
+######################################################################
+# Write Module Data to NVM
+######################################################################
+
+class WriteModuleData2NVMRequest(Packet):
+    name = "WriteModuleData2NVMRequest"
+    fields_desc=[ ByteEnumField("ModuleID", 0x02, ModuleIDList) ]
+
+class WriteModuleData2NVMConfirmation(Packet):
+    name = "WriteModuleData2NVMConfirmation"
+    fields_desc=[ ByteEnumField("Status", 0x0, StatusCodes),
+                  ByteEnumField("ModuleID", 0x02, ModuleIDList) ]
+
 ############################ END ######################################
 
 class HomePlugAV(Packet):
@@ -1200,7 +1214,9 @@ bind_layers( HomePlugAV, ReadMACMemoryRequest, { "HPtype" : 0xA008 } )
 bind_layers( HomePlugAV, ReadMACMemoryConfirmation, { "HPtype" : 0xA009 } )
 bind_layers( HomePlugAV, ReadModuleDataRequest, { "HPtype" : 0xA024 } )
 bind_layers( HomePlugAV, ReadModuleDataConfirmation, { "HPtype" : 0xA025 } )
-bind_layers( HomePlugAV, WriteModuleDataRequest, { "HPtype" : 0xA020 } )  
+bind_layers( HomePlugAV, WriteModuleDataRequest, { "HPtype" : 0xA020 } ) 
+bind_layers( HomePlugAV, WriteModuleData2NVMRequest, { "HPtype" : 0xA028 } ) 
+bind_layers( HomePlugAV, WriteModuleData2NVMConfirmation, { "HPtype" : 0xA029 } )
 bind_layers( HomePlugAV, NetworkInfoConfirmationV10, { "HPtype" : 0xA039, "version" : 0x00 } )
 bind_layers( HomePlugAV, NetworkInfoConfirmationV11, { "HPtype" : 0xA039, "version" : 0x01 } )
 bind_layers( NetworkInfoConfirmationV10, NetworkInfoV10, { "HPtype" : 0xA039, "version" : 0x00 } )
