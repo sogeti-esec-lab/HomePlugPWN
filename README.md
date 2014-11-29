@@ -1,7 +1,7 @@
 HomePlugPWN
 ===========
 
-HomePlugAV PLC tools presented at NoSuchCon 2014: http://www.nosuchcon.org/talks/2014/D1\_03\_Sebastien\_Dudek\_HomePlugAV\_PLC.pdf
+HomePlugAV PLC tools presented at NoSuchCon 2014: http://www.nosuchcon.org/talks/2014/D1_03_Sebastien_Dudek_HomePlugAV_PLC.pdf
 
 ## Requirements 
 - Python >= 2.6
