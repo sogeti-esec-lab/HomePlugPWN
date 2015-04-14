@@ -425,8 +425,10 @@ ModuleIDList = {    0x00 : "MAC Soft-Loader Image",
                     0x02 : "PIB",
                     0x10 : "Write Alternate Flash Location" }
 
-def chksum32(data):
+def chksum32(data, checksum_=None):
     cksum = 0
+    if checksum_ is not None:
+        cksum = checksum_
     for i in range(0, len(data), 4):
         cksum = (cksum ^ struct.unpack('<I', data[i:i+4])[0]) & 0xffffffff   
     return (~cksum) & 0xffffffff
@@ -658,6 +660,15 @@ class ModulePIB(Packet):
             /!\ A wrong slice would produce 'bad' results
     """
     name = "ModulePIB"
+    __offset = None
+    __length = None
+
+    def get_length(self):
+        return self.__length
+    
+    def get_offset(self):
+        return self.__offset
+
     def __init__(self, packet="", offset = 0x0, length = 0x400):
         self.__offset = offset
         self.__length = length
@@ -667,7 +678,7 @@ class ModulePIB(Packet):
                         lambda pkt:(0x1 >= self.__offset and 0x2 <= self.__offset+self.__length) ),
                   ConditionalField( XShortField("reserved_1" , 0x0000),
                         lambda pkt:(0x2 >= self.__offset and 0x4 <= self.__offset+self.__length) ),
-                  ConditionalField( XShortField("PIBLength" , 0x0000),
+                  ConditionalField( LEShortField("PIBLength" , 0x0000),
                         lambda pkt:(0x4 >= self.__offset and 0x6 <= self.__offset+self.__length) ),
                   ConditionalField( XShortField("reserved_2" , 0x0000),
                         lambda pkt:(0x6 >= self.__offset and 0x8 <= self.__offset+self.__length) ),
