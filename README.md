@@ -16,6 +16,8 @@ HomePlugAV PLC tools presented at NoSuchCon 2014: http://www.nosuchcon.org/talks
 - PBKDF1.py: hashes the DAK or NMK passhrase using the PBKDF1
 - quickKODAK.py: performs a KODAK bruteforce on powerline
 - plcmon.py: enables 'Sniffer mode' and uses Sniffer Indicate packet to retrieve CCos MAC address
+- PIBdump.py: dumps your entire PLC configure (PIB) into a file
+- patchPIB.py: patch arbitrary bytes of your PLC, or a field between bytes 0x0-0x400 (see the details of ModulePIB conditions in the Scapy layer). 
 
 ## Efficient remote attack quick guide
 
@@ -47,6 +49,43 @@ Sent 1 packets.
 ```
 
 This will bruteforce the 2 last bytes, generating a new DAK and sending it in broadcast for every combinaison.
+
+## Dump the entire PIB
+
+The following tool aims to dump the entire PIB. You could also use the same techniques to dump the NVM or the Soft-Bootloader...
+
+To process the dump use it as follows:
+
+```bash
+python2 ./PIBdump.py -i enp0s26u1u1 -o mycpl.pib
+[...]
+[+] PIB dump: Success!
+```
+
+A file containing your PLC should be created as follows:
+
+```bash
+wc -c mycpl.pib 
+16440 mycpl.pib
+```
+
+## Path your PIB
+
+If you want to change your MAC address for example, you can specify the Scapy attribute to modify and the value like that:
+
+```bash
+sudo python2 patchPIB.py -i enp0s26u1u1 -d <dest. MAC addr> -t "PIBMACAddr" -v "c0:ff:ee:c0:ff:ee"
+```
+
+As you'll see, the MAC address will be changed for your targeted device. 
+
+But if you want to change any arbitrary byte use this command as follows:
+
+```bash
+ python2 patchPIB.py -i enp0s26u1u1 -d <dest. MAC addr> -a <start_addr>:<len> -v <value>
+```
+
+Like this, you can rewrite the tone map and any other field of your choice ;)
 
 ## Licence
 
