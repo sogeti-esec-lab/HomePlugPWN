@@ -16,7 +16,11 @@ def rewrite_all(data_, dest, src, iface, ):
     res = srp1(pkt, iface=iface)
     # Write Data -> NVM
     pkt = etherhome/WriteModuleData2NVMRequest()
-    srp1(pkt, iface=iface) 
+    res = srp1(pkt, iface=iface)
+    if res.haslayer("WriteModuleData2NVMConfirmation"):
+        if res[WriteModuleData2NVMConfirmation].Status == 0x0:
+            return True
+    return False
 
 if __name__ == "__main__":
     usage = "usage: %prog [options] arg"
@@ -24,9 +28,9 @@ if __name__ == "__main__":
     parser.add_option("-i", "--iface", dest="iface", default="eth0",
         help="select an interface to dump the PIB", metavar="INTERFACE")
     parser.add_option("-d", "--destination", dest="destmac",
-        help="destination MAC address to use", metavar="DESTMARC")
+        help="destination MAC address to use", metavar="DESTMAC")
     parser.add_option("-s", "--source", dest="sourcemac", default="00:c0:ff:ee:00:00",
-        help="source MAC address to use", metavar="SOURCEMARC")
+        help="source MAC address to use", metavar="SOURCEMAC")
     parser.add_option("-a", "--addresses", dest="addresses",
         help="Addresses to rewrite with given value", metavar="START_ADDRESS:LEN")
     parser.add_option("-t", "--targetvar", dest="targetvar",
@@ -45,7 +49,7 @@ if __name__ == "__main__":
     if options.targetvar is not None and options.value is None:
         parser.error("You need to provide a value we given var to rewrite")
     # Dump the PIB for next checksum calc.
-    pib = dump_all(options.sourcemac, options.iface)
+    pib = dump_all(options.sourcemac, options.destmac, options.iface)
     pibparsed = ModulePIB(pib)
     if pibparsed.checksumPIB == chksum32(pib, pibparsed.checksumPIB):
         print "[+] PIB dump: Success!"
@@ -75,6 +79,10 @@ if __name__ == "__main__":
             pib = str(pibparsed)
         pibparsed = ModulePIB(pib)
         pibparsed.checksumPIB = chksum32(str(pibparsed), pibparsed.checksumPIB)
-        rewrite_all(str(pibparsed), options.destmac, options.sourcemac, options.iface)
+        res = rewrite_all(str(pibparsed), options.destmac, options.sourcemac, options.iface)
+        if res is True:
+            print ">>> Success <<<"
+        else:
+            print "Failed! This memory region is probably read-only. Please find another way..."
     else:
         print "Something gone wrong! :("

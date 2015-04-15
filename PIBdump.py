@@ -3,11 +3,11 @@
 from layerscapy.HomePlugAV import *
 from optparse import OptionParser
 
-def dump_all(src, iface):
+def dump_all(src, dst, iface):
     offset = 0
     length = 0x400
     buff_ = ""
-    etherhome = Ether(src=src)/HomePlugAV()
+    etherhome = Ether(src=src, dst=dst)/HomePlugAV()
     pkt = etherhome/ReadModuleDataRequest(Offset=offset, Length=length)
     res = srp1(pkt, iface=iface)
     tModuleData = ModulePIB(res.ModuleData, offset, length)
@@ -28,16 +28,16 @@ if __name__ == "__main__":
     parser.add_option("-i", "--iface", dest="iface", default="eth0",
         help="select an interface to dump the PIB", metavar="INTERFACE")
     parser.add_option("-s", "--source", dest="sourcemac", default="00:c0:ff:ee:00:00",
-        help="source MAC address to use", metavar="SOURCEMARC")
+        help="source MAC address to use", metavar="SOURCEMAC")
+    parser.add_option("-d", "--destination", dest="destmac",
+        help="destination MAC address to use", metavar="DESTMARC")
     parser.add_option("-o", "--output", dest="output", default="Firmwaredump.pib",
         help="Output file name for PIB dump", metavar="OUTPUTNAME")
     (options, args) = parser.parse_args()
     
-    pib = dump_all(options.sourcemac, options.iface)
+    pib = dump_all(options.sourcemac, options.destmac, options.iface)
     if ModulePIB(pib).checksumPIB == chksum32(pib, ModulePIB(pib).checksumPIB):
         print "[+] PIB dump: Success!"
-        print "len", len(pib)
-        print ModulePIB(pib).checksumPIB, chksum32(pib, ModulePIB(pib).checksumPIB)
         f = open(options.output, "w")
         f.write(pib)
         f.close()
