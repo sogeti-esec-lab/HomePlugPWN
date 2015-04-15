@@ -69,7 +69,7 @@ wc -c mycpl.pib
 16440 mycpl.pib
 ```
 
-## Path your PIB
+## Patch your PIB
 
 If you want to change your MAC address for example, you can specify the Scapy attribute to modify and its new value:
 
