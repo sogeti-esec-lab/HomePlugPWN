@@ -20,7 +20,7 @@ if __name__ == "__main__":
     parser.add_option("-t", "--targets", dest="macaddress", default="",
         help="Targets MAC address bytes", metavar="MACBYTES")
     parser.add_option("-s", "--source", dest="sourcemac", default="00:c4:ff:ee:00:00",
-        help="source MAC address to use", metavar="SOURCEMARC")
+        help="source MAC address to use", metavar="SOURCEMAC")
     parser.add_option("-k", "--key", dest="nmk", default="\x00"*16,
         help="NMK key to configure", metavar="NMK")
 

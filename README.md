@@ -62,7 +62,7 @@ python2 ./PIBdump.py -i enp0s26u1u1 -o mycpl.pib
 [+] PIB dump: Success!
 ```
 
-A file containing your PLC should be created as follows:
+A file containing your PLC Programmable Information Blocks (PIB) should be created as follows:
 
 ```bash
 wc -c mycpl.pib 
@@ -71,15 +71,15 @@ wc -c mycpl.pib
 
 ## Path your PIB
 
-If you want to change your MAC address for example, you can specify the Scapy attribute to modify and the value like that:
+If you want to change your MAC address for example, you can specify the Scapy attribute to modify and its new value:
 
 ```bash
-sudo python2 patchPIB.py -i enp0s26u1u1 -d <dest. MAC addr> -t "PIBMACAddr" -v "c0:ff:ee:c0:ff:ee"
+python2 patchPIB.py -i enp0s26u1u1 -d <dest. MAC addr> -t "PIBMACAddr" -v "c0:ff:ee:c0:ff:ee"
 ```
 
-As you'll see, the MAC address will be changed for your targeted device. 
+The MAC address should be changed after that for your targeted device. But if the addresses are read-only for this device, you have to hack a little bit to reflash it correctly.
 
-But if you want to change any arbitrary byte use this command as follows:
+Nevertheless, if you want to change any arbitrary byte use this command as follows:
 
 ```bash
  python2 patchPIB.py -i enp0s26u1u1 -d <dest. MAC addr> -a <start_addr>:<len> -v <value>

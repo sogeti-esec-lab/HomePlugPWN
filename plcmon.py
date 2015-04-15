@@ -21,7 +21,7 @@ if __name__ == "__main__":
     parser.add_option("-i", "--iface", dest="iface", default="eth0",
         help="select an interface to Enable sniff mode and sniff indicates packets", metavar="INTERFACE")
     parser.add_option("-s", "--source", dest="sourcemac", default="00:c4:ff:ee:00:00",
-        help="source MAC address to use", metavar="SOURCEMARC")
+        help="source MAC address to use", metavar="SOURCEMAC")
     (options, args) = parser.parse_args()
     print "[+] Enabling sniff mode"
     pkt = Ether(src=options.sourcemac)/HomePlugAV()/SnifferRequest(SnifferControl=1) # We enable Sniff mode here
