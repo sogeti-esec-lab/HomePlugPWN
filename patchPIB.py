@@ -24,9 +24,9 @@ if __name__ == "__main__":
     parser.add_option("-i", "--iface", dest="iface", default="eth0",
         help="select an interface to dump the PIB", metavar="INTERFACE")
     parser.add_option("-d", "--destination", dest="destmac",
-        help="destination MAC address to use", metavar="DESTMAC")
+        help="destination MAC address to use", metavar="DESTMARC")
     parser.add_option("-s", "--source", dest="sourcemac", default="00:c0:ff:ee:00:00",
-        help="source MAC address to use", metavar="SOURCEMAC")
+        help="source MAC address to use", metavar="SOURCEMARC")
     parser.add_option("-a", "--addresses", dest="addresses",
         help="Addresses to rewrite with given value", metavar="START_ADDRESS:LEN")
     parser.add_option("-t", "--targetvar", dest="targetvar",

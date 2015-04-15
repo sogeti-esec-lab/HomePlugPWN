@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser.add_option("-i", "--iface", dest="iface", default="eth0",
         help="select an interface to dump the PIB", metavar="INTERFACE")
     parser.add_option("-s", "--source", dest="sourcemac", default="00:c0:ff:ee:00:00",
-        help="source MAC address to use", metavar="SOURCEMAC")
+        help="source MAC address to use", metavar="SOURCEMARC")
     parser.add_option("-o", "--output", dest="output", default="Firmwaredump.pib",
         help="Output file name for PIB dump", metavar="OUTPUTNAME")
     (options, args) = parser.parse_args()
