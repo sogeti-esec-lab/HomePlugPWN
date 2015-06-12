@@ -107,3 +107,19 @@ pkt = WriteModuleDataRequest(pkt.build())
 pkt.show()
 (pkt.checksum == chksum32(pkt.ModuleData), pkt.DataLen == len(pkt.ModuleData))
 _ == (True, True)
+
+= Testing newest chipsets commands parsing
+_xstring = "\x00\xb0\xa0\x00\xb0R\x00\x00\x00\x00\x01\x00\x00\x12\x00\x00\x00\x00\x00\x02p\x00\x00x\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+pkt = HomePlugAV(_xstring)
+(pkt.operation == 0, pkt.ReadDataLen == 1400, pkt.ModuleID == 0x7002, pkt.ModuleSubID == 0x0)
+_ == (True, True, True, True)
+
+_xstring = "\x00\x00\x00\x00\x00\x00\x00\x00\x01\x11\x00\x17\x00\x00\x00\x00\x00\x124Vx\x00\x02p\x00\x00x\x05\xf0\n\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+pkt = ModuleOperationConfirmation(_xstring)
+pkt.SessionID == 2018915346
+_ == True
+
+= Testing newest write operation command generation
+pkt=ModuleOperationRequest(operation = 0x0011, ModuleData="\x00"*20)
+pkt.haslayer('Raw') == False
+_ == True
