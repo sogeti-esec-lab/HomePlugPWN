@@ -1,3 +1,8 @@
+Support
+=======
+
+This project has been developed at Sogeti when the R&D lab was still up. For ongoing support, visit @FlUxIuS' repository https://github.com/FlUxIuS/HomePlugPWN. 
+
 HomePlugPWN
 ===========
 
